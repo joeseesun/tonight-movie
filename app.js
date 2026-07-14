@@ -150,7 +150,7 @@
     const links = [
       { name: "豆瓣", desc: "条目 · 评分 · 影评", url: `https://search.douban.com/movie/subject_search?search_text=${q}` },
       { name: "JustWatch", desc: "正版流媒体平台", url: `https://www.justwatch.com/us/search?q=${qTitle}` },
-      { name: "资源搜索", desc: "磁力链搜索引擎", url: `https://btdig.com/search?q=${q}` },
+      { name: "爱奇艺", desc: "站内搜索 · 在线观看", url: `https://www.iqiyi.com/search/${qTitle}.html` },
     ];
     return `
       <div class="watch-section">
