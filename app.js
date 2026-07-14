@@ -288,10 +288,139 @@
     search(query);
   });
 
-  document.querySelectorAll(".chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      input.value = chip.textContent.trim();
-      form.requestSubmit();
+  /* ---------- 提示词池：打字机 placeholder + chips 轮换 ---------- */
+
+  const POOL = Array.isArray(window.PROMPT_POOL) && window.PROMPT_POOL.length
+    ? window.PROMPT_POOL
+    : ["我想看一部高分悬疑片"];
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function shuffled(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // chips：每 8 秒换一批，淡入淡出
+  const chipsBox = $("#chips");
+  let chipOrder = shuffled(POOL);
+  let chipCursor = 0;
+
+  function nextChipBatch() {
+    if (chipCursor + 5 > chipOrder.length) {
+      chipOrder = shuffled(POOL);
+      chipCursor = 0;
+    }
+    const batch = chipOrder.slice(chipCursor, chipCursor + 5);
+    chipCursor += 5;
+    return batch;
+  }
+
+  function renderChips(texts) {
+    chipsBox.innerHTML = "";
+    for (const text of texts) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = text;
+      chip.addEventListener("click", () => {
+        input.value = text;
+        form.requestSubmit();
+      });
+      chipsBox.appendChild(chip);
+    }
+  }
+
+  renderChips(nextChipBatch());
+  if (!reduceMotion) {
+    setInterval(() => {
+      chipsBox.classList.add("chips-fading");
+      setTimeout(() => {
+        renderChips(nextChipBatch());
+        chipsBox.classList.remove("chips-fading");
+      }, 320);
+    }, 8000);
+  }
+
+  // placeholder 打字机：打完停留 4 秒，快速退格，换下一条
+  const DEFAULT_PLACEHOLDER = input.getAttribute("placeholder");
+  const typeQueue = shuffled(POOL);
+  let typeIdx = 0;
+  let typeTimer = null;
+  let typing = false;
+
+  function typeNext() {
+    if (typing) return;
+    typing = true;
+    const text = typeQueue[typeIdx % typeQueue.length];
+    typeIdx += 1;
+    let i = 0;
+    const tick = () => {
+      i += 1;
+      input.setAttribute("placeholder", `例如：${text.slice(0, i)}`);
+      if (i < text.length) {
+        typeTimer = setTimeout(tick, 55);
+      } else {
+        typeTimer = setTimeout(() => eraseNext(text), 4000);
+      }
+    };
+    typeTimer = setTimeout(tick, 400);
+  }
+
+  function eraseNext(text) {
+    let i = text.length;
+    const tick = () => {
+      i -= 3;
+      if (i <= 0) {
+        input.setAttribute("placeholder", "例如：");
+        typing = false;
+        typeTimer = setTimeout(typeNext, 350);
+        return;
+      }
+      input.setAttribute("placeholder", `例如：${text.slice(0, i)}`);
+      typeTimer = setTimeout(tick, 24);
+    };
+    tick();
+  }
+
+  function stopTypewriter() {
+    if (typeTimer) { clearTimeout(typeTimer); typeTimer = null; }
+    typing = false;
+    input.setAttribute("placeholder", DEFAULT_PLACEHOLDER);
+  }
+
+  if (!reduceMotion && !window.matchMedia("(pointer: coarse)").matches) {
+    input.addEventListener("focus", stopTypewriter);
+    input.addEventListener("blur", () => {
+      if (!input.value.trim()) {
+        typeIdx = 0;
+        typeNext();
+      }
     });
-  });
+    typeNext();
+  }
+
+  /* ---------- hero 背景海报墙 ---------- */
+
+  fetch("/api/hero-posters")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      if (!data?.posters?.length) return;
+      const wall = $("#hero-wall");
+      const frag = document.createDocumentFragment();
+      for (const p of data.posters) {
+        const img = document.createElement("img");
+        img.src = p.poster;
+        img.alt = "";
+        img.loading = "lazy";
+        img.setAttribute("aria-hidden", "true");
+        frag.appendChild(img);
+      }
+      wall.appendChild(frag);
+      requestAnimationFrame(() => wall.classList.add("on"));
+    })
+    .catch(() => {});
 })();
