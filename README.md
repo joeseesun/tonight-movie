@@ -28,7 +28,7 @@
 | 海报墙结果 | 海报、评分徽章、片名、年份、类型，交错浮现动效 |
 | 详情弹窗 | 完整简介、导演、主演、片长、地区、奖项、IMDb 链接 |
 | 片名一键复制 | 卡片和弹窗都能复制英文片名，方便去别处搜索 |
-| 去哪看 | 豆瓣 / JustWatch / 资源搜索三个跳转入口（搜索式跳转，不提供资源） |
+| 去哪看 | 豆瓣 / JustWatch / 爱奇艺三个跳转入口（搜索式跳转，不提供资源） |
 | 海报代理 | 海报经服务端代理转发，解决部分地区 Amazon 图床不可达 |
 
 ![详情弹窗：评分、简介、主创、奖项与"去哪看"跳转](docs/assets/detail-modal.png)
@@ -141,7 +141,7 @@ IMDb 评分筛选 + 排序（不足时自动放宽 1 分）
 
 # Tonight Movie · English
 
-Describe what you want to watch in plain language ("a mind-bending Nolan movie", "90s sci-fi with high ratings"). DeepSeek parses the intent into an OMDb query plan, the backend verifies candidates against OMDb, filters by IMDb rating, and renders a poster wall. Click a card for full details, one-click title copy, and outbound links to Douban / JustWatch / resource search.
+Describe what you want to watch in plain language ("a mind-bending Nolan movie", "90s sci-fi with high ratings"). DeepSeek parses the intent into an OMDb query plan, the backend verifies candidates against OMDb, filters by IMDb rating, and renders a poster wall. Click a card for full details, one-click title copy, and outbound links to Douban / JustWatch / iQiyi search.
 
 - Live demo: https://imdb.qiaomu.ai
 - Stack: static frontend + two Vercel serverless functions (`api/recommend.js`, `api/poster.js`), no build step
