@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>今晚看什么 · AI 高分电影推荐</title>
+  <meta name="description" content="说一句人话，AI 理解你的观影需求，从 OMDb 检索并筛选 IMDb 高分电影，海报墙一目了然。" />
+  <link rel="canonical" href="https://imdb.qiaomu.ai/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="今晚看什么" />
+  <meta property="og:title" content="今晚看什么 · AI 高分电影推荐" />
+  <meta property="og:description" content="说一句人话，AI 帮你从 OMDb 挑出 IMDb 高分电影。" />
+  <meta property="og:url" content="https://imdb.qiaomu.ai/" />
+  <meta property="og:image" content="https://imdb.qiaomu.ai/assets/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="今晚看什么 · AI 高分电影推荐" />
+  <meta name="twitter:description" content="说一句人话，AI 帮你从 OMDb 挑出 IMDb 高分电影。" />
+  <meta name="twitter:image" content="https://imdb.qiaomu.ai/assets/og.png" />
+  <meta name="theme-color" content="#0f0e0c" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script defer src="https://umami.qiaomu.ai/script.js" data-website-id="9dc6c4de-0f7c-4ab5-914a-9d206732b565" data-domains="imdb.qiaomu.ai"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "今晚看什么",
+    "url": "https://imdb.qiaomu.ai/",
+    "description": "说一句人话，AI 理解你的观影需求，从 OMDb 检索并筛选 IMDb 高分电影。",
+    "applicationCategory": "EntertainmentApplication",
+    "inLanguage": "zh-CN"
+  }
+  </script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.26 6.6.56-5 4.36 1.5 6.82L12 16.9 5.99 20l1.5-6.82-5-4.36 6.6-.56L12 2z"/></svg>
+      <span class="brand-name">今晚看什么</span>
+    </a>
+    <span class="brand-note">AI × OMDb · IMDb 高分精选</span>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <p class="kicker">Natural language movie finder</p>
+      <h1 class="hero-title">说一句人话，<br /><em>给你一部高分片。</em></h1>
+      <p class="hero-sub">Deepseek 理解你的观影欲望，OMDb 负责检索验证，只把 IMDb 高分的那批端上来。</p>
+
+      <form class="search" id="search-form" role="search">
+        <input
+          id="search-input"
+          type="text"
+          autocomplete="off"
+          maxlength="200"
+          placeholder="例如：我想看一部让人后背发凉的高分悬疑片"
+          aria-label="观影需求"
+        />
+        <button type="submit" class="search-btn" id="search-btn">
+          <span class="btn-label">找片</span>
+          <span class="btn-star" aria-hidden="true">★</span>
+        </button>
+      </form>
+
+      <div class="chips" id="chips" aria-label="试试这些">
+        <button type="button" class="chip">来一部 9 分以上的神作</button>
+        <button type="button" class="chip">90 年代的高分科幻片</button>
+        <button type="button" class="chip">适合情侣晚上看的爱情片</button>
+        <button type="button" class="chip">诺兰导演的烧脑电影</button>
+        <button type="button" class="chip">轻松点的喜剧，评分别太低</button>
+      </div>
+    </section>
+
+    <section class="status" id="status" hidden>
+      <div class="status-inner">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="status-text">AI 正在理解你的需求…</span>
+      </div>
+    </section>
+
+    <section class="results" id="results" hidden>
+      <div class="results-head">
+        <h2 class="results-title" id="results-summary"></h2>
+        <p class="results-meta" id="results-meta"></p>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section class="empty" id="empty" hidden>
+      <p class="empty-title">这次没有捞到符合条件的片子</p>
+      <p class="empty-sub">换个说法试试，比如放宽年代或评分要求。</p>
+    </section>
+
+    <section class="error" id="error" hidden>
+      <p class="empty-title">出了点问题</p>
+      <p class="empty-sub" id="error-text">服务暂时不可用，请稍后再试。</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-left">
+      <span>数据来自 <a href="https://www.omdbapi.com/" target="_blank" rel="noopener">OMDb API</a> · 评分来自 IMDb</span>
+      <a class="tuijian" href="https://tuijian.qiaomu.ai/" target="_blank" rel="noopener">乔木推荐</a>
+    </div>
+    <div class="footer-actions">
+      <button class="icon-btn" id="reward-btn" aria-label="打赏" title="打赏">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.9-10-9.5C.5 8 2.5 4.5 6 4.5c2.2 0 3.7 1.2 4.5 2.6.8-1.4 2.3-2.6 4.5-2.6 3.5 0 5.5 3.5 4 7-2.5 4.6-7 9.5-7 9.5z"/></svg>
+      </button>
+      <button class="icon-btn" id="follow-btn" aria-label="关注" title="关注">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0 2c-4.4 0-8 2.2-8 5v1.5h16V19c0-2.8-3.6-5-8-5z"/></svg>
+      </button>
+      <a class="icon-btn" href="https://github.com/joeseesun/" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2A10 10 0 002 12c0 4.4 2.9 8.2 6.8 9.5.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.4-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.2-.4-1.2.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 015 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.6.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0022 12 10 10 0 0012 2z"/></svg>
+      </a>
+      <a class="icon-btn" href="https://x.com/vista8" target="_blank" rel="noopener" aria-label="X" title="X">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.7 3H21l-7.3 8.3L22.2 21h-6.7l-5.2-6-6 6H1l7.8-8.9L1.5 3h6.9l4.7 5.5L17.7 3zm-1.2 16h1.9L7.1 4.9H5.1L16.5 19z"/></svg>
+      </a>
+    </div>
+  </footer>
+
+  <div class="modal" id="movie-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel">
+      <button class="modal-close" data-close aria-label="关闭">×</button>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div class="modal qr-modal" id="reward-modal" hidden role="dialog" aria-modal="true" aria-labelledby="reward-title">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel qr-panel">
+      <button class="modal-close" data-close aria-label="关闭">×</button>
+      <h3 id="reward-title">打赏支持</h3>
+      <img src="/assets/qiaomu_reward_qr.png" alt="打赏二维码" loading="lazy" />
+      <p>如果帮你挑到了好片，可以请作者喝杯咖啡。</p>
+    </div>
+  </div>
+
+  <div class="modal qr-modal" id="follow-modal" hidden role="dialog" aria-modal="true" aria-labelledby="follow-title">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel qr-panel">
+      <button class="modal-close" data-close aria-label="关闭">×</button>
+      <h3 id="follow-title">关注 向阳乔木推荐看</h3>
+      <img src="/assets/qiaomu_wechat_public_account_qr.jpg" alt="微信公众号 向阳乔木推荐看 二维码" loading="lazy" />
+      <p>扫码关注公众号，或在
+        <a href="https://github.com/joeseesun/" target="_blank" rel="noopener">GitHub</a> /
+        <a href="https://x.com/vista8" target="_blank" rel="noopener">X</a>
+        找到作者。
+      </p>
+    </div>
+  </div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

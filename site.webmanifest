@@ -1,0 +1,15 @@
+{
+  "name": "今晚看什么 · AI 高分电影推荐",
+  "short_name": "今晚看什么",
+  "description": "说一句人话，AI 帮你从 OMDb 挑出 IMDb 高分电影。",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0e0c",
+  "theme_color": "#0f0e0c",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
